@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/auth';
+import { useTheme } from '../lib/theme';
 
-export default function SavedDestinationsScreen() {
+export default function SavedDestinationsScreen({ navigation }) {
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
@@ -79,29 +80,60 @@ export default function SavedDestinationsScreen() {
     }
   };
 
+  const styles = createStyles(theme);
+
   if (loading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#667eea" />
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backButtonText}>← Back</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        </View>
       </View>
     );
   }
 
   if (destinations.length === 0) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.emptyIcon}>🗺️</Text>
-        <Text style={styles.emptyTitle}>No saved destinations yet</Text>
-        <Text style={styles.emptyText}>
-          Start searching for destinations and save your favorites!
-        </Text>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backButtonText}>← Back</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.centered}>
+          <Text style={styles.emptyIcon}>🗺️</Text>
+          <Text style={styles.emptyTitle}>No saved destinations yet</Text>
+          <Text style={styles.emptyText}>
+            Start searching for destinations and save your favorites!
+          </Text>
+        </View>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.backButtonText}>← Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Saved Destinations</Text>
+      </View>
+      <ScrollView style={styles.content}>
         {destinations.map((dest) => (
           <View key={dest.id} style={styles.card}>
             <View style={styles.cardHeader}>
@@ -132,15 +164,37 @@ export default function SavedDestinationsScreen() {
             </TouchableOpacity>
           </View>
         ))}
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f4f8',
+    backgroundColor: theme.colors.background,
+  },
+  header: {
+    backgroundColor: theme.colors.headerBg,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 15,
+  },
+  backButton: {
+    padding: 8,
+    marginBottom: 8,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: theme.colors.primary,
+    fontWeight: '600',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: theme.colors.text,
   },
   content: {
     padding: 15,

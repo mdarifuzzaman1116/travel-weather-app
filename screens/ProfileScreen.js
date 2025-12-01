@@ -8,8 +8,9 @@ import {
   Alert,
 } from 'react-native';
 import { useAuth } from '../lib/auth';
+import { useTheme } from '../lib/theme';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   const { user, signOut } = useAuth();
 
   const handleSignOut = async () => {
@@ -32,8 +33,20 @@ export default function ProfileScreen() {
     );
   };
 
+  const styles = createStyles(theme);
+
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.backButtonText}>← Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>My Profile</Text>
+      </View>
+      <ScrollView style={styles.scrollContent}>
       <View style={styles.content}>
         <View style={styles.profileSection}>
           <View style={styles.avatar}>
@@ -75,14 +88,40 @@ export default function ProfileScreen() {
 
         <Text style={styles.version}>Version 1.0.0</Text>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f4f8',
+    backgroundColor: theme.colors.background,
+  },
+  header: {
+    backgroundColor: theme.colors.headerBg,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 15,
+  },
+  backButton: {
+    padding: 8,
+    marginBottom: 8,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: theme.colors.primary,
+    fontWeight: '600',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: theme.colors.text,
+  },
+  scrollContent: {
+    flex: 1,
   },
   content: {
     padding: 20,
