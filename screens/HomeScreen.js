@@ -669,6 +669,12 @@ const createStyles = (theme) => StyleSheet.create({
   },
   content: {
     flex: 1,
+    ...Platform.select({
+      web: {
+        height: '100vh',
+        overflow: 'auto',
+      },
+    }),
   },
   heroWrapper: {
     backgroundColor: theme.colors.background,
