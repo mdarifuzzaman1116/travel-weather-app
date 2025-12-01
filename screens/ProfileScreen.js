@@ -134,7 +134,7 @@ const createStyles = (theme) => StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#667eea',
+    backgroundColor: theme.colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
@@ -146,7 +146,7 @@ const createStyles = (theme) => StyleSheet.create({
   },
   email: {
     fontSize: 16,
-    color: '#1f2937',
+    color: theme.colors.text,
     fontWeight: '500',
   },
   section: {
@@ -156,14 +156,14 @@ const createStyles = (theme) => StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 12,
-    color: '#1f2937',
+    color: theme.colors.text,
   },
   infoCard: {
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.card,
     padding: 15,
     borderRadius: 8,
     marginBottom: 10,
-    shadowColor: '#000',
+    shadowColor: theme.colors.shadowColor,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
@@ -171,16 +171,16 @@ const createStyles = (theme) => StyleSheet.create({
   },
   infoLabel: {
     fontSize: 12,
-    color: '#6b7280',
+    color: theme.colors.textSecondary,
     marginBottom: 5,
   },
   infoValue: {
     fontSize: 14,
-    color: '#1f2937',
+    color: theme.colors.text,
   },
   aboutText: {
     fontSize: 14,
-    color: '#6b7280',
+    color: theme.colors.textSecondary,
     lineHeight: 20,
   },
   signOutButton: {
@@ -197,7 +197,7 @@ const createStyles = (theme) => StyleSheet.create({
   },
   version: {
     textAlign: 'center',
-    color: '#9ca3af',
+    color: theme.colors.textSecondary,
     fontSize: 12,
     marginTop: 20,
   },
