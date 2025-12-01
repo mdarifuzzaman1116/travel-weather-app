@@ -668,11 +668,17 @@ const createStyles = (theme) => StyleSheet.create({
     marginVertical: 4,
   },
   content: {
-    flex: 1,
     ...Platform.select({
+      ios: {
+        flex: 1,
+      },
+      android: {
+        flex: 1,
+      },
       web: {
-        height: '100vh',
+        height: 'calc(100vh - 80px)',
         overflow: 'auto',
+        WebkitOverflowScrolling: 'touch',
       },
     }),
   },
