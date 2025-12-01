@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   TextInput,
   Dimensions,
   ActivityIndicator,
+  Animated,
 } from 'react-native';
 import { useAuth } from '../lib/auth';
 import { useTheme } from '../lib/theme';
@@ -81,6 +82,9 @@ export default function HomeScreen({ navigation }) {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searchType, setSearchType] = useState(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const scrollViewRef = useRef(null);
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   const handleSignOut = async () => {
     setMenuVisible(false);
@@ -131,6 +135,19 @@ export default function HomeScreen({ navigation }) {
     setSearchQuery('');
     setResults(null);
     setSearchType(null);
+    scrollToTop();
+  };
+
+  const handleScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    scrollY.setValue(offsetY);
+    setShowScrollTop(offsetY > 300);
+  };
+
+  const scrollToTop = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ y: 0, animated: true });
+    }
   };
 
   const styles = createStyles(theme);
@@ -231,7 +248,13 @@ export default function HomeScreen({ navigation }) {
         </TouchableOpacity>
       </Modal>
 
-      <ScrollView style={styles.content}>
+      <ScrollView 
+        ref={scrollViewRef}
+        style={styles.content}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={true}
+      >
         {/* Hero Section - Only show when no search results */}
         {!results && (
           <View style={styles.heroWrapper}>
@@ -443,6 +466,30 @@ export default function HomeScreen({ navigation }) {
         </View>
         )}
       </ScrollView>
+
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <Animated.View 
+          style={[
+            styles.scrollTopButton,
+            {
+              opacity: scrollY.interpolate({
+                inputRange: [300, 400],
+                outputRange: [0, 1],
+                extrapolate: 'clamp',
+              }),
+            },
+          ]}
+        >
+          <TouchableOpacity 
+            style={styles.scrollTopButtonInner}
+            onPress={scrollToTop}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.scrollTopButtonText}>↑</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      )}
     </View>
   );
 }
@@ -933,5 +980,38 @@ const createStyles = (theme) => StyleSheet.create({
     color: theme.colors.text,
     marginTop: 24,
     marginBottom: 16,
+  },
+  scrollTopButton: {
+    position: 'absolute',
+    bottom: isWeb ? 30 : 80,
+    right: 20,
+    zIndex: 1000,
+  },
+  scrollTopButtonInner: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: theme.colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+      },
+      android: {
+        elevation: 8,
+      },
+      web: {
+        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+      },
+    }),
+  },
+  scrollTopButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
   },
 });
