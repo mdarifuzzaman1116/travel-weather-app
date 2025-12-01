@@ -12,6 +12,7 @@ import { useTheme } from '../lib/theme';
 
 export default function ProfileScreen({ navigation }) {
   const { user, signOut } = useAuth();
+  const { theme } = useTheme();
 
   const handleSignOut = async () => {
     Alert.alert(
